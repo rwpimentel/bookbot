@@ -1,49 +1,53 @@
 def main():
- 
-    # vars
     book_path = "books/frankenstein.txt"
     text = get_book_text(book_path)
-    count = word_count(text)
-    letter = count_chars(text)
-    rpt = report(text)
+    num_words = get_num_words(text)
+    chars_dict = get_chars_dict(text)
+    chars_sorted_list = chars_dict_to_sorted_list(chars_dict)
 
-    # actions
-    #print("The book text is", text)
-    #print("The word count is", count)
-    print(letter)
+    print(f"--- Begin report of {book_path} ---")
+    print(f"{num_words} words found in the document")
+    print()
+
+    for item in chars_sorted_list:
+        if not item["char"].isalpha():
+            continue
+        print(f"The '{item['char']}' character was found {item['num']} times")
+
+    print("--- End report ---")
 
 
-    return 0
+def get_num_words(text):
+    words = text.split()
+    return len(words)
 
-# functions
-def get_book_text(text):
-    with open(text) as f:
+
+def sort_on(d):
+    return d["num"]
+
+
+def chars_dict_to_sorted_list(num_chars_dict):
+    sorted_list = []
+    for ch in num_chars_dict:
+        sorted_list.append({"char": ch, "num": num_chars_dict[ch]})
+    sorted_list.sort(reverse=True, key=sort_on)
+    return sorted_list
+
+
+def get_chars_dict(text):
+    chars = {}
+    for c in text:
+        lowered = c.lower()
+        if lowered in chars:
+            chars[lowered] += 1
+        else:
+            chars[lowered] = 1
+    return chars
+
+
+def get_book_text(path):
+    with open(path) as f:
         return f.read()
 
-def word_count(text):
-    lstring = str.split(text)
-    return len(lstring)
-
-def count_chars(text):
-    text = text.lower()
-    dict = {}
-
-    for i in range(0, len(text)):
-        #if (text[i].isalpha()):
-        if text[i] in dict:
-            dict[text[i]] += 1
-        else:
-            dict[text[i]] = 1
-    return dict
-
-def report(text):
-
-    text = count_chars(text)
-   
-    for i in range(0, len(text)):
-        if (text[i].isalpha()):
-            print("yes")
-
-    return None    
 
 main()
